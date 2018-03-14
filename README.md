@@ -1,1 +1,1 @@
-Created production details page inr reactjs.
+User reactjs for product details
