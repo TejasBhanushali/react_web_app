@@ -45,7 +45,7 @@ export  default class ProductDetails extends Component {
     var that = this;
     var imgBasUrl = "https://s3.amazonaws.com/instadelibucket/";
      
-    var   url = 'https://192.168.1.100:8443/InstaAdminLocal/jws/productVariant/36006?Size=M&Material=Cotton&Color=%230000FF&select=Size&selectValue=M';
+    var   url = 'https://192.168.1.132:8443/InstaAdminLocal/jws/productVariant/36006?Size=M&Material=Cotton&Color=%230000FF&select=Size&selectValue=M';
        //console.log("url:"+url);
       fetch(url).then(function (response) {
         return response.json();
@@ -73,11 +73,7 @@ export  default class ProductDetails extends Component {
   //This method is get called before the componenet get mount into DOM
   //This method runs once in lifecycle and before the render, hence do all you want to do before rendering.
   
-  handleClick(data) {
-    console.log("-------------- ProductDetails.handleClick is getting called --------------- "+data);
-    this.fetchProductBasedOfSelction();
-   // this.fetchBasedOnValidation(data);
-  }
+   
   
   displayImage(url){
     this.setState({
@@ -89,7 +85,9 @@ export  default class ProductDetails extends Component {
   
   // Mounts the component into DOM  
   render() {
+
     if(this.state.isLoaded == true){
+      console.log("----------- Rendering product in ProductDetails.Render()---------"+ this.state.product.product_Id);
       console.log("************ 4.0 started ProductDetails.Render() method gets called ****************");
       var imgBasUrl = "https://s3.amazonaws.com/instadelibucket/";
       let productV = this.state.product;
@@ -205,7 +203,7 @@ export  default class ProductDetails extends Component {
                                 count = count + 1;
                                switch(variantKey) {
                                    case 'Color': return <ColorV product={productV} variantKey={variantKey} key={index} 
-                                    onClick={(data) => that.handleClick(data)} 
+                                   onClick={that.props.onClick}  
                                     id={"ColorV"+ that.state.variantKey +"-" + count +  index } />;break;
                                   // case 'Size': return  <Size product={productV} variantKey={variantKey} key={index} onClick={onClickFunc} />;break;
                                    //case 'Material': return  <Material product={productV} variantKey={variantKey} key={index} onClick={onClickFunc}/>;break;
