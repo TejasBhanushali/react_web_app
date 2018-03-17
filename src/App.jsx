@@ -22,7 +22,8 @@ class App extends Component {
     super(props);
     console.log("************ 1.0 constructor() method gets called ****************");
     
-   // this.handleClick = this.handleClick.bind(this);
+    this.fetchProductBasedOnSelction = this.fetchProductBasedOnSelction.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.state = {
       isOnLoad : true,
       isLoaded:false,
@@ -46,7 +47,7 @@ class App extends Component {
     var that = this;
     var imgBasUrl = "https://s3.amazonaws.com/instadelibucket/";
      
-    var   url = 'https://192.168.1.100:8443/InstaAdminLocal/jws/productVariant/36006?Size=S&Material=Cotton&Color=%23000000&select=Color&selectValue=%23000000';
+    var   url = 'https://192.168.1.132:8443/InstaAdminLocal/jws/productVariant/36006?Size=S&Material=Cotton&Color=%23000000&select=Color&selectValue=%23000000';
        //console.log("url:"+url);
       fetch(url).then(function (response) {
         return response.json();
@@ -79,18 +80,62 @@ class App extends Component {
   componentWillMount() {
      this.fetchFirst();
   } 
+
+  handleClick(data) {
+    
+    console.log("-------------- ProductDetails.handleClick is getting called --------------- "+data);
+  this.fetchProductBasedOnSelction();  
+  //this.forceUpdate();
+  }
+  
+  shouldComponentUpdate(newProps, newState){
+    console.log("-------------- shouldComponentUpdate --------------- "+newState.product.product_Id);
+    return( true );
+  }
+  fetchProductBasedOnSelction(){
+    // console.log("************ 3.0 fetchFirst() method gets called ****************");
+     console.log("###################### 3.0 ProductDetails.fetchProductBasedOfSelction() method gets called ######################");
+     // handle this in that variable and then access inside the function
+     var that = this;
+     var imgBasUrl = "https://s3.amazonaws.com/instadelibucket/";
+      
+     var   url = 'https://192.168.1.132:8443/InstaAdminLocal/jws/productVariant/36006?Size=M&Material=Cotton&Color=%230000FF&select=Size&selectValue=M';
+      console.log("url:"+url);
+       fetch(url).then(function (response) {
+         return response.json();
+       }).then(function (result) {
+       
+         that.setState({ status: result.status,
+           product: result.result.product,
+           productImages:result.result.product.productImagesSet,
+           variantKeys:result.result.product.variantKeys,
+           variantMap: result.result.product.variantMap,
+           productSpecificationSet: result.result.product.productSpecificationSet,
+           displayImgUrl: imgBasUrl + result.result.product.imageUrl,
+           isOnLoad:false,
+            isLoaded:true
+          });
+          console.log("----------- that.state.product_Id ---------"+ that.state.product.product_Id);
+         console.log("Completing  fetchProductBasedOfSelction");
+       });
+       console.log("----------- this.state.product_Id ---------"+ this.state.product.product_Id);
+    // console.log("************ 3.0 Completed fetchFirst() method  ****************");
+   }  
+ 
   // Mounts the component into DOM  
   render() {
-    
+    console.log("this.state.isLoaded ****************"+this.state.isLoaded);
     if (this.state.isLoaded ==  true) {
       console.log("************  App.render() method has been called  ****************");
+      console.log("----------- Rendering product---------"+ this.state.product.product_Id);
       var imgBasUrl = "https://s3.amazonaws.com/instadelibucket/";
       var that = this;
       let productV = this.state.product;
        
       var count = 0;
       return (<div id="container">
-                  <ProductDetails productV={this.state.product} isOnLoad={this.state.isOnLoad}/>
+                  <ProductDetails productV={this.state.product} isOnLoad={this.state.isOnLoad} 
+                  onClick={this.handleClick }/>
               </div>
       );
       console.log("************  App.render() method has been Completed  ****************");
